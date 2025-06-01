@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: "resourceserver"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080"
+
+server:
+  port: 8082
+
+logging:
+  level:
+    org.springframework.security: trace
+
