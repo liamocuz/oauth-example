@@ -9,7 +9,7 @@ const oidcConfig: UserManagerSettings = {
   client_id: "react-client",
   redirect_uri: window.location.origin + "/callback",
   response_type: "code",
-  scope: "openid user.read",
+  scope: "openid",
   post_logout_redirect_uri: window.location.origin,
   stateStore: new WebStorageStateStore({ store: window.localStorage }),
   automaticSilentRenew: false,

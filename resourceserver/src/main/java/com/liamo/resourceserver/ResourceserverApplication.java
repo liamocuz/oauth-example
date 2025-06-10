@@ -8,6 +8,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,10 +34,11 @@ public class ResourceserverApplication {
 class HelloController {
 
     @GetMapping("/hello")
-    @PreAuthorize("hasAnyAuthority('SCOPE_profile', 'SCOPE_user.read')")
+    @PreAuthorize("hasRole('user.read')")
     public Map<String, String> hello(@AuthenticationPrincipal Jwt jwt) {
         System.out.println(jwt.getClaims());
-        return Map.of("message", "Hello, " + jwt.getSubject());
+        String firstName = jwt.getClaim("first_name");
+        return Map.of("message", "Hello, " + firstName);
     }
 }
 
@@ -54,4 +57,14 @@ class SecurityConfig {
         return source;
     }
 
+    // Converts the "roles" claim on the jwt to authorities for the user
+    @Bean
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+        JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
+        converter.setAuthoritiesClaimName("roles");
+        converter.setAuthorityPrefix("");   // Set to empty string because default is SCOPE_
+        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
+        jwtConverter.setJwtGrantedAuthoritiesConverter(converter);
+        return jwtConverter;
+    }
 }

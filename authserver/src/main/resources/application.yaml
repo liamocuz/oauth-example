@@ -2,6 +2,25 @@ spring:
   application:
     name: "authserver"
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "<Add client-id>"
+            client-secret: "<Add client-secret>"
+            authorization-grant-type: "authorization_code"
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - "openid"
+              - "email"
+              - "profile"
+            provider: "google"
+
+        provider:
+          google:
+            issuer-uri: "https://accounts.google.com"
+
 server:
   port: 8080
 
